@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from 'react'
 import {Link} from 'react-router-dom'
-import { Row,Col,Image,ListGroup,Card,Button,ListGroupItem } from 'react-bootstrap'
+import { useDispatch,useSelector } from 'react-redux'
+import { Row,Col,Image,ListGroup,Card,Button } from 'react-bootstrap'
 import Rating from '../components/Rating'
-import axios from 'axios'
+import Message from '../components/Message'
+import Loader from '../components/Loader'
+import { listProductsDetails } from '../actions/productActions.js'
 
 const ProductScreen = ({match}) => {
-  
-    const [product,setProduct] = useState({})
+  const dispatch = useDispatch()
+
+  const productDetails = useSelector((state) => state.productDetails)
+  const { loading, error, product } = productDetails
 
     useEffect(() =>{
-        const fetchProduct =  async () =>{
-            const {data} = await axios.get(`/api/products/${match.params.id}`)
-            
-            setProduct(data)
-        }
-        fetchProduct()
-    },[match])
+        dispatch(listProductsDetails(match.params.id))
+    },[dispatch,match])
 
-
-  return <>
+    
+  return (
+    <>
     <Link className='btn btn-light my3' to='/'>
         Go Back
     </Link>
-    <Row>
+    {loading ? <Loader/> : error ? <Message variant='danger'>{error}</Message> : (
+        <Row>
         <Col md={6}>
             <Image src={product.image} alt={product.name} fluid/>
         </Col>
@@ -52,7 +54,7 @@ const ProductScreen = ({match}) => {
                         <Row>
                             <Col>Price:</Col>
                                 <Col>
-                                 <strong>₹{Math.round(product.price *76)}</strong>
+                                <strong>₹{Math.round(product.price *76)}</strong>
                                 </Col>
                         </Row>
                     </ListGroup.Item>
@@ -78,7 +80,12 @@ const ProductScreen = ({match}) => {
             </Card>
         </Col>
     </Row>
-  </>
+    )}
+            
+          </>
+  //loading close here
+  )
+  
 }
 
 export default ProductScreen
