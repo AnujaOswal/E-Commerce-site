@@ -5,11 +5,12 @@ import { Row,Col,Image,ListGroup,Card,Button } from 'react-bootstrap'
 import Rating from '../components/Rating'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
-import { listProductsDetails } from '../actions/productActions.js'
+import { listProductsDetails } from '../actions/productActions'
 
 const ProductScreen = ({match}) => {
+    
   const dispatch = useDispatch()
-
+  //const product = products.find((p) => p._id === match.params.id)
   const productDetails = useSelector((state) => state.productDetails)
   const { loading, error, product } = productDetails
 
